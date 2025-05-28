@@ -1,8 +1,9 @@
 import React from 'react';
+import './UserRegistration.css';
 
 function UserRegistration() {
   return (
-    <div>
+    <div className="user-registration">
       <h2>User Registration</h2>
       <form>
         <input type="email" placeholder="Email" />

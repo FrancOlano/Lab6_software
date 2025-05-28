@@ -1,7 +1,7 @@
 import React from 'react';
-import './App.css';
 import UserRegistration from './components/UserRegistration';
 import BookCatalog from './components/BookCatalog';
+import './App.css';
 
 function App() {
   return (
