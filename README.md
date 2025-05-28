@@ -93,7 +93,7 @@ Provide a generic administrator account email admin@admin.com and password admin
 ![User Reserve](./screenshots/user-reserve.png)
 
 ### 🧑‍💼 Administrator View
-![Administrator View](./screenshots/administrator-view.png)
+![Administrator View](./screenshots/adminstrator-view.png)
 
 ### ➕ Create Book Form
 ![Create Book](./screenshots/createbook.png)
