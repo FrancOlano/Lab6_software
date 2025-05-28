@@ -1,6 +1,6 @@
-.user-registration {
+.login-form {
   margin-bottom: 20px;
-  padding: 10px;
+  padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #fff;
@@ -8,12 +8,13 @@
   margin: 20px auto;
 }
 
-.user-registration h2 {
+.login-form h2 {
   color: #333;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  text-align: center;
 }
 
-.user-registration input {
+.login-form input {
   width: 100%;
   padding: 8px;
   margin-bottom: 10px;
@@ -22,38 +23,43 @@
   box-sizing: border-box;
 }
 
-.user-registration button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px 15px;
+.login-form .button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.login-form button {
+  padding: 8px 16px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  width: 100%;
 }
 
-.user-registration button:hover {
-  background-color: #3e8e41;
+.login-form button[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
 }
 
-.user-registration .error {
-  border-color: #ff0000;
-  background-color: #fff8f8;
+.login-form button[type="button"] {
+  background-color: #f44336;
+  color: white;
 }
 
-.user-registration .message {
-  margin: 10px 0;
+.login-form .message {
+  margin-top: 10px;
   padding: 10px;
   border-radius: 4px;
+  text-align: center;
 }
 
-.user-registration .message.error {
+.login-form .message.error {
   background-color: #ffebee;
   color: #c62828;
   border: 1px solid #ffcdd2;
 }
 
-.user-registration .message.success {
+.login-form .message.success {
   background-color: #e8f5e9;
   color: #2e7d32;
   border: 1px solid #c8e6c9;

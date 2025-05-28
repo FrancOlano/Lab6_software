@@ -1,0 +1,33 @@
+Requirements Document based on –
+Library Reservations
+This document outlines the user stories to define the expected behavior of the system,
+according to agile development best practices.
+1. User Stories
+US-01
+As a user, I want to register with my email so that I can access the reservation system.
+Acceptance Criteria:
+ The functionality must be available in the main interface.
+ The user must be able to undo the action if necessary.
+ The system must confirm the action with a message afterward.
+ All data must be saved correctly and remain accessible afterward.
+US-02
+As a user, I want to reserve available books to make sure I’ll be able to read them.
+Acceptance Criteria:
+ The functionality must be available in the main interface.
+ The user must be able to undo the action if necessary.
+ The system must confirm the action with a message afterward.
+ All data must be saved correctly and remain accessible afterward.
+US-03
+As an administrator, I want to add books to the system to keep the catalog up to date.
+Acceptance Criteria:
+ The functionality must be available in the main interface.
+ The user must be able to undo the action if necessary.
+ The system must confirm the action with a message afterward.
+ All data must be saved correctly and remain accessible afterward.
+US-04
+As a user, I want to cancel a reservation to release the book if I no longer need it.
+Acceptance Criteria:
+ The functionality must be available in the main interface.
+ The user must be able to undo the action if necessary.
+ The system must confirm the action with a message afterward.
+ All data must be saved correctly and remain accessible afterward. 
