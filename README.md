@@ -77,6 +77,33 @@ Provide a generic administrator account email admin@admin.com and password admin
 
 ## Screenshots
 
+### 🏠 Main Page
+![Main Page](./screenshots/main-page.png)
+
+### 🔍 Search Page
+![Search](./screenshots/search.png)
+
+### 🔐 Sign In
+![Sign In](./screenshots/sign-in.png)
+
+### 👤 User View
+![User View](./screenshots/user-view.png)
+
+### 📚 User Reserving a Book
+![User Reserve](./screenshots/user-reserve.png)
+
+### 🧑‍💼 Administrator View
+![Administrator View](./screenshots/administrator-view.png)
+
+### ➕ Create Book Form
+![Create Book](./screenshots/createbook.png)
+
+### ✅ Book Created Confirmation
+![Book Created](./screenshots/book-created.png)
+
+### 🚫 Book Blocked by User
+![Book Blocked by User](./screenshots/book-blocked-by-user.png)
+
 
 
 ## Lessons Learned Using Copilot
