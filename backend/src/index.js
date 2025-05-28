@@ -3,7 +3,7 @@ const app = express();
 const port = 3001;
 const AuthService = require('../services/AuthService');
 const BookService = require('../services/BookService');
-const ReservationService = require('../services/ReservationService');
+const reservationService = require('../services/ReservationService');
 
 const authService = new AuthService();
 const bookService = new BookService();
@@ -17,25 +17,40 @@ app.post('/register', (req, res) => {
   res.json({ success });
 });
 
-app.post('/books', (req, res) => {
-  const { title, author } = req.body;
-  const book = { title, author, available: true };
-  bookService.addBook(book);
-  res.status(201).json(book);
+app.post('/books', async (req, res) => {
+  const { title, author, available } = req.body;
+  const book = { title, author, available };
+  try {
+    const result = await bookService.addBook(book);
+    res.status(201).json({...book, id: bookService.recentlyAddedBooks[bookService.recentlyAddedBooks.length -1].id});
+  } catch (error) {
+    console.error("Error adding book:", error);
+    res.status(500).json({ error: 'Failed to add book' });
+  }
+});
+
+app.delete('/books/:id', async (req, res) => {
+  const bookId = req.params.id;
+  try {
+    await bookService.undoAddBook(bookId);
+    res.json({ message: 'Book removed successfully' });
+  } catch (error) {
+    console.error("Error removing book:", error);
+    res.status(500).json({ error: 'Failed to remove book' });
+  }
 });
 
 app.get('/books', (req, res) => {
   res.json(bookService.getBooks());
 });
 
-app.post('/reservations', (req, res) => {
+app.post('/reservations', async (req, res) => {
   const { userId, bookId } = req.body;
-  const success = bookService.reserveBook(bookId);
-  if (success) {
-    reservationService.createReservation({ userId, bookId, date: new Date() });
-    res.status(201).json({ success: true });
-  } else {
-    res.status(400).json({ success: false, message: 'Book not available' });
+  try {
+    const reservation = await reservationService.reserveBook(userId, bookId);
+    res.status(201).json({ success: true, reservation });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
   }
 });
 
