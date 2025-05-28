@@ -18,8 +18,8 @@ app.post('/register', (req, res) => {
 });
 
 app.post('/books', (req, res) => {
-  const { title, author } = req.body;
-  const book = { title, author, available: true };
+  const { title, author, available } = req.body;
+  const book = { title, author, available };
   bookService.addBook(book);
   res.status(201).json(book);
 });
