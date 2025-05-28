@@ -1,35 +1,59 @@
-class BookService {
-  constructor() {
-    this.books = [];
-  }
+const db = require('../database');
 
+class BookService {
   addBook(book) {
-    this.books.push(book);
-    console.log(`${book.title} added.`);
+    return new Promise((resolve, reject) => {
+      db.run("INSERT INTO books (title, author, available) VALUES (?, ?, ?)", [book.title, book.author, book.available], function(err) {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          console.log(`${book.title} added.`);
+          resolve(true);
+        }
+      });
+    });
   }
 
   getBooks() {
-    return this.books;
+    return new Promise((resolve, reject) => {
+      db.all("SELECT * FROM books", [], (err, rows) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      });
+    });
   }
 
   reserveBook(bookId) {
-    const book = this.books.find(b => b.id === bookId);
-    if (book && book.available) {
-      book.available = false;
-      console.log(`${book.title} reserved.`);
-      return true;
-    }
-    return false;
+    return new Promise((resolve, reject) => {
+      db.run("UPDATE books SET available = 0 WHERE rowid = ?", [bookId], function(err) {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          console.log(`Book ${bookId} reserved.`);
+          resolve(true);
+        }
+      });
+    });
   }
 
   cancelReservation(bookId) {
-    const book = this.books.find(b => b.id === bookId);
-    if (book && !book.available) {
-      book.available = true;
-      console.log(`${book.title} reservation cancelled.`);
-      return true;
-    }
-    return false;
+    return new Promise((resolve, reject) => {
+      db.run("UPDATE books SET available = 1 WHERE rowid = ?", [bookId], function(err) {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          console.log(`Book ${bookId} reservation cancelled.`);
+          resolve(true);
+        }
+      });
+    });
   }
 }
 

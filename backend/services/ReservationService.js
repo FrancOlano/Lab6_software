@@ -1,25 +1,45 @@
-class ReservationService {
-  constructor() {
-    this.reservations = [];
-  }
+const db = require('../database');
 
+class ReservationService {
   createReservation(reservation) {
-    this.reservations.push(reservation);
-    console.log(`Reservation created for ${reservation.bookId}.`);
+    return new Promise((resolve, reject) => {
+      db.run("INSERT INTO reservations (userId, bookId, date) VALUES (?, ?, ?)", [reservation.userId, reservation.bookId, reservation.date], function(err) {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          console.log(`Reservation created for ${reservation.bookId}.`);
+          resolve(true);
+        }
+      });
+    });
   }
 
   getReservationsByUser(userId) {
-    return this.reservations.filter(r => r.userId === userId);
+    return new Promise((resolve, reject) => {
+      db.all("SELECT * FROM reservations WHERE userId = ?", [userId], (err, rows) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      });
+    });
   }
 
   cancelReservation(reservationId) {
-    const reservationIndex = this.reservations.findIndex(r => r.id === reservationId);
-    if (reservationIndex !== -1) {
-      this.reservations.splice(reservationIndex, 1);
-      console.log(`Reservation ${reservationId} cancelled.`);
-      return true;
-    }
-    return false;
+    return new Promise((resolve, reject) => {
+      db.run("DELETE FROM reservations WHERE rowid = ?", [reservationId], function(err) {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          console.log(`Reservation ${reservationId} cancelled.`);
+          resolve(true);
+        }
+      });
+    });
   }
 }
 

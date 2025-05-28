@@ -1,8 +1,18 @@
+const db = require('../database');
+
 class AuthService {
   registerUser(email) {
-    // Placeholder for user registration logic
-    console.log(`User ${email} registered.`);
-    return true; // Simulate successful registration
+    return new Promise((resolve, reject) => {
+      db.run("INSERT INTO users (email) VALUES (?)", [email], function(err) {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          console.log(`User ${email} registered.`);
+          resolve(true);
+        }
+      });
+    });
   }
 }
 
