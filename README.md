@@ -1,4 +1,8 @@
 # Lab6_software
+
+# Github Repository
+https://github.com/FrancOlano/Lab6_software
+
 # Library Reservations App
 
 This is a full-stack application for managing library book reservations. Users can register with their email, view and reserve books, and cancel reservations. Administrators can add new books to the catalog.
@@ -50,6 +54,12 @@ Create a local database using SQLite to store all specified data needed.
 
 This prompt introduced persistence using a local SQLite database. Models and services were updated to use SQLite instead of in-memory arrays. Tables were created for Users, Books, and Reservations. CRUD operations were rewritten to interact with SQLite using a lightweight Node.js library (such as `sqlite3`). The goal was to store data persistently between sessions and support proper querying and filtering logic from the backend.
 
+
+### Prompt 4
+
+I have been working in separate user stories of the context.txt.
+Check the code and fix any issues that may have appeared. 
+Make sure that the acceptance criteria is passed.
 
 ## Screenshots
 

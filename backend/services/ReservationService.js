@@ -1,35 +1,75 @@
-const Reservation = require('../models/Reservation');
-const Book = require('../models/Book');
+const db = require('../database');
 
 async function reserveBook(userId, bookId) {
-  try {
-    const book = await Book.findById(bookId);
+  return new Promise((resolve, reject) => {
+    db.get("SELECT available FROM books WHERE rowid = ?", [bookId], (err, row) => {
+      if (err) {
+        console.error(err);
+        reject(err);
+        return;
+      }
 
-    if (!book) {
-      throw new Error('Book not found');
-    }
+      if (!row) {
+        reject(new Error('Book not found'));
+        return;
+      }
 
-    if (!book.available || book.reserved) {
-      throw new Error('Book is not available for reservation');
-    }
+      if (!row.available) {
+        reject(new Error('Book is not available for reservation'));
+        return;
+      }
 
-    const reservation = new Reservation({
-      user: userId,
-      book: bookId
+      db.run(
+        "INSERT INTO reservations (userId, bookId) VALUES (?, ?)",
+        [userId, bookId],
+        function (err) {
+          if (err) {
+            console.error(err);
+            reject(err);
+            return;
+          }
+
+          db.run(
+            "UPDATE books SET available = 0 WHERE rowid = ?",
+            [bookId],
+            function (err) {
+              if (err) {
+                console.error(err);
+                reject(err);
+                return;
+              }
+
+              resolve({ id: this.lastID, userId, bookId });
+            }
+          );
+        }
+      );
     });
+  });
+}
 
-    await reservation.save();
+async function cancelReservation(reservationId) {
+    return new Promise((resolve, reject) => {
+        db.run("DELETE FROM reservations WHERE rowid = ?", [reservationId], function(err) {
+            if (err) {
+                console.error(err);
+                reject(err);
+                return;
+            }
 
-    book.reserved = true;
-    book.available = false;
-    await book.save();
-
-    return reservation;
-  } catch (error) {
-    throw error;
-  }
+            db.run("UPDATE books SET available = 1 WHERE rowid = (SELECT bookId FROM reservations WHERE rowid = ?)", [reservationId], function(err) {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                    return;
+                }
+                resolve(true);
+            });
+        });
+    });
 }
 
 module.exports = {
-  reserveBook
+  reserveBook,
+  cancelReservation
 };
