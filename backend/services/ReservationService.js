@@ -1,46 +1,35 @@
-const db = require('../database');
+const Reservation = require('../models/Reservation');
+const Book = require('../models/Book');
 
-class ReservationService {
-  createReservation(reservation) {
-    return new Promise((resolve, reject) => {
-      db.run("INSERT INTO reservations (userId, bookId, date) VALUES (?, ?, ?)", [reservation.userId, reservation.bookId, reservation.date], function(err) {
-        if (err) {
-          console.error(err);
-          reject(err);
-        } else {
-          console.log(`Reservation created for ${reservation.bookId}.`);
-          resolve(true);
-        }
-      });
-    });
-  }
+async function reserveBook(userId, bookId) {
+  try {
+    const book = await Book.findById(bookId);
 
-  getReservationsByUser(userId) {
-    return new Promise((resolve, reject) => {
-      db.all("SELECT * FROM reservations WHERE userId = ?", [userId], (err, rows) => {
-        if (err) {
-          console.error(err);
-          reject(err);
-        } else {
-          resolve(rows);
-        }
-      });
-    });
-  }
+    if (!book) {
+      throw new Error('Book not found');
+    }
 
-  cancelReservation(reservationId) {
-    return new Promise((resolve, reject) => {
-      db.run("DELETE FROM reservations WHERE rowid = ?", [reservationId], function(err) {
-        if (err) {
-          console.error(err);
-          reject(err);
-        } else {
-          console.log(`Reservation ${reservationId} cancelled.`);
-          resolve(true);
-        }
-      });
+    if (!book.available || book.reserved) {
+      throw new Error('Book is not available for reservation');
+    }
+
+    const reservation = new Reservation({
+      user: userId,
+      book: bookId
     });
+
+    await reservation.save();
+
+    book.reserved = true;
+    book.available = false;
+    await book.save();
+
+    return reservation;
+  } catch (error) {
+    throw error;
   }
 }
 
-module.exports = ReservationService;
+module.exports = {
+  reserveBook
+};

@@ -3,7 +3,7 @@ const app = express();
 const port = 3001;
 const AuthService = require('../services/AuthService');
 const BookService = require('../services/BookService');
-const ReservationService = require('../services/ReservationService');
+const reservationService = require('../services/ReservationService');
 
 const authService = new AuthService();
 const bookService = new BookService();
@@ -28,14 +28,13 @@ app.get('/books', (req, res) => {
   res.json(bookService.getBooks());
 });
 
-app.post('/reservations', (req, res) => {
+app.post('/reservations', async (req, res) => {
   const { userId, bookId } = req.body;
-  const success = bookService.reserveBook(bookId);
-  if (success) {
-    reservationService.createReservation({ userId, bookId, date: new Date() });
-    res.status(201).json({ success: true });
-  } else {
-    res.status(400).json({ success: false, message: 'Book not available' });
+  try {
+    const reservation = await reservationService.reserveBook(userId, bookId);
+    res.status(201).json({ success: true, reservation });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
   }
 });
 
