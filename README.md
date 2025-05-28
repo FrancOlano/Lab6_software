@@ -1,12 +1,11 @@
 # Lab6_software
 
-# Github Repository
+# Github Repository  
 https://github.com/FrancOlano/Lab6_software
-
 
 # To run
 
-`cd backend; npm start`
+`cd backend; npm start`  
 `cd frontend; npm start`
 
 # Library Reservations App
@@ -60,25 +59,24 @@ Create a local database using SQLite to store all specified data needed.
 
 This prompt introduced persistence using a local SQLite database. Models and services were updated to use SQLite instead of in-memory arrays. Tables were created for Users, Books, and Reservations. CRUD operations were rewritten to interact with SQLite using a lightweight Node.js library (such as `sqlite3`). The goal was to store data persistently between sessions and support proper querying and filtering logic from the backend.
 
-
 ### Prompt 4
 
-I have been working in separate user stories of the context.txt.
-Check the code and fix any issues that may have appeared. 
+I have been working in separate user stories of the context.txt.  
+Check the code and fix any issues that may have appeared.  
 Make sure that the acceptance criteria is passed.
 
 ### Prompt 5
-What the user should see is the books able to reserve, and when he wants to reserve to be necesary to log in,
-To log in the will have the sing in or register menu option
-This menu will comply with all the acceptance criteria in US-01
-Once we are logged in we can reserve a book or cancel a reservation, that is US-03 and US-04.
+
+What the user should see is the books able to reserve, and when he wants to reserve to be necesary to log in,  
+To log in the will have the sing in or register menu option  
+This menu will comply with all the acceptance criteria in US-01  
+Once we are logged in we can reserve a book or cancel a reservation, that is US-03 and US-04.  
 There should be a separate siplay of books that you have currently reserved
 
 Provide a generic administrator account email admin@admin.com and password admin, print them when the app is initilized, so that when you enter you can also do it as administrator and have all the priviliges listed on the acceptance cirteria US-03. As an administrator you should only be able to upload, modify or delete books
 
 ## Screenshots
 
- 
 
 
 ## Lessons Learned Using Copilot
@@ -88,3 +86,14 @@ Using GitHub Copilot was a huge help, especially for getting started quickly. It
 That said, it wasn’t perfect. We noticed that Copilot sometimes made assumptions that didn’t match our app’s logic, so we had to review and tweak the code quite a bit. Also, for more complex features (like undo actions or managing state across components), it needed clearer prompts and guidance.
 
 In short, Copilot is great for speeding up the development process and reducing repetitive work, but it’s still important to understand your code and stay in control of the structure and logic.
+
+## Issues Found During Testing
+
+- I could not sign in as a regular user, nor successfully create an account.  
+- I could sign in as administrator but when adding a book I see the message that there has been an error.  
+- I suspect that I have created the book but there has been an error displaying the message.  
+- When signing out of the administrator account, there was an error fetching the books.
+
+**Admin test account:**  
+Email: `admin@admin.com`  
+Password: `admin`
