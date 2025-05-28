@@ -1,0 +1,13 @@
+{
+  "name": "library-reservations-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Library Reservations application",
+  "scripts": {
+    "start": "react-scripts start"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1"
+  }
+}
