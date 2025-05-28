@@ -17,11 +17,27 @@ app.post('/register', (req, res) => {
   res.json({ success });
 });
 
-app.post('/books', (req, res) => {
+app.post('/books', async (req, res) => {
   const { title, author, available } = req.body;
   const book = { title, author, available };
-  bookService.addBook(book);
-  res.status(201).json(book);
+  try {
+    const result = await bookService.addBook(book);
+    res.status(201).json({...book, id: bookService.recentlyAddedBooks[bookService.recentlyAddedBooks.length -1].id});
+  } catch (error) {
+    console.error("Error adding book:", error);
+    res.status(500).json({ error: 'Failed to add book' });
+  }
+});
+
+app.delete('/books/:id', async (req, res) => {
+  const bookId = req.params.id;
+  try {
+    await bookService.undoAddBook(bookId);
+    res.json({ message: 'Book removed successfully' });
+  } catch (error) {
+    console.error("Error removing book:", error);
+    res.status(500).json({ error: 'Failed to remove book' });
+  }
 });
 
 app.get('/books', (req, res) => {

@@ -4,6 +4,23 @@ import BookCatalog from './components/BookCatalog';
 import './App.css';
 
 function App() {
+  const [bookIdToRemove, setBookIdToRemove] = useState('');
+
+  const handleRemoveSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch(`/api/books/${bookIdToRemove}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      alert('Book removed successfully!');
+      setBookIdToRemove('');
+    } catch (error) {
+      alert(`Error removing book: ${error.message}`);
+    }
+  };
   const [newBook, setNewBook] = useState({ title: '', author: '', available: true });
 
   const handleInputChange = (event) => {
@@ -51,6 +68,15 @@ function App() {
         </label>
         <br />
         <button type="submit">Add Book</button>
+      </form>
+      <h2>Remove Book</h2>
+      <form onSubmit={handleRemoveSubmit}>
+        <label>
+          Book ID to remove:
+          <input type="number" name="bookIdToRemove" value={bookIdToRemove} onChange={(e) => setBookIdToRemove(parseInt(e.target.value, 10))} />
+        </label>
+        <br />
+        <button type="submit">Remove Book</button>
       </form>
     </div>
   );
