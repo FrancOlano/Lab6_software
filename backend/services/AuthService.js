@@ -74,6 +74,41 @@ class AuthService {
       });
     });
   }
+
+  async loginUser(email, password) {
+    try {
+      this.validateEmail(email);
+      
+      return new Promise((resolve, reject) => {
+        db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
+          if (err) {
+            console.error('Database error:', err);
+            reject(new Error('Login failed'));
+            return;
+          }
+
+          if (!user) {
+            reject(new Error('Invalid email or password'));
+            return;
+          }
+
+          const passwordMatch = await bcrypt.compare(password, user.password);
+          if (!passwordMatch) {
+            reject(new Error('Invalid email or password'));
+            return;
+          }
+
+          resolve({
+            id: user.id,
+            email: user.email,
+            role: user.role
+          });
+        });
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = AuthService;

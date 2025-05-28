@@ -54,34 +54,58 @@ app.delete('/register/:userId', async (req, res) => {
 
 app.post('/books', async (req, res) => {
   const { title, author, available } = req.body;
-  const book = { title, author, available };
+  if (!title || !author) {
+    res.status(400).json({ 
+      success: false, 
+      message: 'Title and author are required' 
+    });
+    return;
+  }
+
   try {
-    const result = await bookService.addBook(book);
-    res.status(201).json({...book, id: bookService.recentlyAddedBooks[bookService.recentlyAddedBooks.length -1].id});
+    const book = { title, author, available: available !== false };
+    const newBook = await BookService.addBook(book);
+    res.status(201).json({
+      success: true,
+      book: newBook
+    });
   } catch (error) {
     console.error("Error adding book:", error);
-    res.status(500).json({ error: 'Failed to add book' });
+    res.status(500).json({ 
+      success: false, 
+      message: error.message || 'Failed to add book' 
+    });
   }
 });
 
 app.delete('/books/:id', async (req, res) => {
   const bookId = req.params.id;
   try {
-    await bookService.undoAddBook(bookId);
-    res.json({ message: 'Book removed successfully' });
+    const result = await BookService.undoAddBook(bookId);
+    res.json({ 
+      success: true, 
+      message: 'Book removed successfully',
+      book: result.book
+    });
   } catch (error) {
     console.error("Error removing book:", error);
-    res.status(500).json({ error: 'Failed to remove book' });
+    res.status(500).json({ 
+      success: false, 
+      message: error.message || 'Failed to remove book' 
+    });
   }
 });
 
 app.get('/books', async (req, res) => {
   try {
-    const books = await bookService.getBooks();
+    const books = await BookService.getBooks();
     res.json(books);
   } catch (error) {
     console.error("Error fetching books:", error);
-    res.status(500).json({ error: 'Failed to fetch books' });
+    res.status(500).json({ 
+      success: false, 
+      message: error.message || 'Failed to fetch books' 
+    });
   }
 });
 
@@ -89,9 +113,13 @@ app.post('/reservations', async (req, res) => {
   const { userId, bookId } = req.body;
   try {
     const reservation = await ReservationService.reserveBook(userId, bookId);
-    res.status(201).json({ success: true, reservation });
+    res.status(201).json(reservation);
   } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+    console.error('Reservation error:', error);
+    res.status(400).json({ 
+      success: false, 
+      message: error.message || 'Failed to reserve book'
+    });
   }
 });
 
@@ -106,10 +134,39 @@ app.delete('/reservations/:id', async (req, res) => {
 
 app.get('/reservations/user/:userId', async (req, res) => {
   try {
-    const reservations = await ReservationService.getUserReservations(req.params.userId);
-    res.json(reservations);
+    const userId = parseInt(req.params.userId, 10);
+    if (isNaN(userId)) {
+      throw new Error('Invalid user ID');
+    }
+    const reservations = await ReservationService.getUserReservations(userId);
+    res.json(reservations || []);
   } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+    console.error('Error fetching reservations:', error);
+    res.status(400).json({ 
+      success: false, 
+      message: error.message || 'Failed to fetch reservations'
+    });
+  }
+});
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await authService.loginUser(email, password);
+    res.json({
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(401).json({ 
+      success: false, 
+      message: error.message || 'Invalid credentials'
+    });
   }
 });
 

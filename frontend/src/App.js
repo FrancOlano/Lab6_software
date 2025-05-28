@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import UserRegistration from './components/UserRegistration';
 import BookCatalog from './components/BookCatalog';
+import LoginForm from './components/LoginForm';
+import BookManagement from './components/BookManagement';
 import './App.css';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [message, setMessage] = useState('');
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const [userReservations, setUserReservations] = useState([]);
   const [newBook, setNewBook] = useState({ title: '', author: '', available: true });
   const [bookIdToRemove, setBookIdToRemove] = useState('');
   const [lastAddedBook, setLastAddedBook] = useState(null);
@@ -103,62 +108,93 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Library Reservations App</h1>
+      <header className="App-header">
+        <h1>Library Reservation System</h1>
+        <nav>
+          {!currentUser ? (
+            <>
+              <button onClick={() => { setShowLogin(true); setShowRegister(false); }}>
+                Sign In
+              </button>
+              <button onClick={() => { setShowRegister(true); setShowLogin(false); }}>
+                Register
+              </button>
+            </>
+          ) : (
+            <>
+              <span>Welcome, {currentUser.email}</span>
+              <button onClick={() => {
+                setCurrentUser(null);
+                setIsAdmin(false);
+                setShowLogin(false);
+                setShowRegister(false);
+              }}>Sign Out</button>
+            </>
+          )}
+        </nav>
+      </header>
+
       {message && <div className="message">{message}</div>}
       
-      <UserRegistration onUserRegister={setCurrentUser} />
-      
-      <BookCatalog userId={currentUser?.id} isAdmin={isAdmin} />
-      
-      {isAdmin && (
+      {showRegister && !currentUser && (
+        <UserRegistration 
+          onUserRegister={(user) => {
+            setCurrentUser(user);
+            setIsAdmin(user.role === 'admin');
+            setShowRegister(false);
+          }}
+          onCancel={() => setShowRegister(false)}
+        />
+      )}
+
+      {showLogin && !currentUser && (
+        <LoginForm 
+          onLogin={(user) => {
+            setCurrentUser(user);
+            setIsAdmin(user.role === 'admin');
+            setShowLogin(false);
+          }}
+          onCancel={() => setShowLogin(false)}
+        />
+      )}
+
+      {isAdmin ? (
         <div className="admin-section">
           <h2>Book Management</h2>
-          <form onSubmit={handleSubmit} className="add-book-form">
-            <h3>Add New Book</h3>
-            <input
-              type="text"
-              name="title"
-              placeholder="Book Title"
-              value={newBook.title}
-              onChange={handleInputChange}
-              required
-            />
-            <input
-              type="text"
-              name="author"
-              placeholder="Author"
-              value={newBook.author}
-              onChange={handleInputChange}
-              required
-            />
-            <label>
-              Available:
-              <input
-                type="checkbox"
-                name="available"
-                checked={newBook.available}
-                onChange={handleInputChange}
-              />
-            </label>
-            <button type="submit">Add Book</button>
-            {lastAddedBook && (
-              <button type="button" onClick={handleUndoAddBook}>
-                Undo Add Book
-              </button>
-            )}
-          </form>
-
-          <form onSubmit={handleRemoveSubmit} className="remove-book-form">
-            <h3>Remove Book</h3>
-            <input
-              type="number"
-              placeholder="Book ID"
-              value={bookIdToRemove}
-              onChange={(e) => setBookIdToRemove(e.target.value)}
-              required
-            />
-            <button type="submit">Remove Book</button>
-          </form>
+          <BookManagement 
+            onBookAdded={() => setMessage('Book added successfully')}
+            onBookRemoved={() => setMessage('Book removed successfully')}
+          />
+        </div>
+      ) : (
+        <div className="user-section">
+          <BookCatalog 
+            userId={currentUser?.id}
+            onReserve={(bookId) => {
+              if (!currentUser) {
+                setMessage('Please sign in to reserve books');
+                setShowLogin(true);
+                return;
+              }
+              // Handle reservation
+            }}
+          />
+          
+          {currentUser && userReservations.length > 0 && (
+            <div className="my-reservations">
+              <h2>My Reserved Books</h2>
+              <ul>
+                {userReservations.map(reservation => (
+                  <li key={reservation.id}>
+                    {reservation.book.title}
+                    <button onClick={() => handleCancelReservation(reservation.id)}>
+                      Cancel Reservation
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
     </div>

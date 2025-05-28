@@ -1,7 +1,9 @@
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('./database.db');
 
-db.serialize(() => {
+const bcrypt = require('bcrypt');
+
+db.serialize(async () => {
   // Create users table with role, email uniqueness, and password
   db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE, password TEXT NOT NULL, role TEXT DEFAULT 'user' CHECK (role IN ('user', 'admin')))");
   
@@ -11,7 +13,29 @@ db.serialize(() => {
   // Create reservations table with foreign keys and timestamp
   db.run("CREATE TABLE IF NOT EXISTS reservations (id INTEGER PRIMARY KEY AUTOINCREMENT, userId INTEGER, bookId INTEGER, date TEXT DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(userId) REFERENCES users(id), FOREIGN KEY(bookId) REFERENCES books(id))");
 
-  // Check if books table is empty and seed initial data if it is
+  // Add admin user if it doesn't exist
+  const adminPassword = 'admin';
+  const hashedPassword = await bcrypt.hash(adminPassword, 10);
+  
+  db.get("SELECT * FROM users WHERE email = ?", ['admin@admin.com'], (err, row) => {
+    if (!row) {
+      db.run("INSERT INTO users (email, password, role) VALUES (?, ?, ?)", 
+        ['admin@admin.com', hashedPassword, 'admin'],
+        (err) => {
+          if (err) {
+            console.error('Error creating admin user:', err);
+          } else {
+            console.log('\n=== Administrator Account ===');
+            console.log('Email: admin@admin.com');
+            console.log('Password: admin');
+            console.log('========================\n');
+          }
+        }
+      );
+    }
+  });
+
+  // Check if books table is emptyand seed initial data if it is
   db.get("SELECT COUNT(*) as count FROM books", [], (err, row) => {
     if (err) {
       console.error('Error checking books table:', err);

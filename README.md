@@ -3,6 +3,12 @@
 # Github Repository
 https://github.com/FrancOlano/Lab6_software
 
+
+# To run
+
+`cd backend; npm start`
+`cd frontend; npm start`
+
 # Library Reservations App
 
 This is a full-stack application for managing library book reservations. Users can register with their email, view and reserve books, and cancel reservations. Administrators can add new books to the catalog.
@@ -60,6 +66,15 @@ This prompt introduced persistence using a local SQLite database. Models and ser
 I have been working in separate user stories of the context.txt.
 Check the code and fix any issues that may have appeared. 
 Make sure that the acceptance criteria is passed.
+
+### Prompt 5
+What the user should see is the books able to reserve, and when he wants to reserve to be necesary to log in,
+To log in the will have the sing in or register menu option
+This menu will comply with all the acceptance criteria in US-01
+Once we are logged in we can reserve a book or cancel a reservation, that is US-03 and US-04.
+There should be a separate siplay of books that you have currently reserved
+
+Provide a generic administrator account email admin@admin.com and password admin, print them when the app is initilized, so that when you enter you can also do it as administrator and have all the priviliges listed on the acceptance cirteria US-03. As an administrator you should only be able to upload, modify or delete books
 
 ## Screenshots
 
