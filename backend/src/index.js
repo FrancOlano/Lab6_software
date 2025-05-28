@@ -7,7 +7,7 @@ const ReservationService = require('../services/ReservationService');
 
 const authService = new AuthService();
 const bookService = new BookService();
-const reservationService = new ReservationService();
+const reservationService = new ReservationService(bookService);
 
 app.use(express.json());
 
